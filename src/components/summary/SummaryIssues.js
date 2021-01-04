@@ -38,7 +38,7 @@ const SummaryIssues = ({ backdropState = false }) => {
             onClick={handleToggle}>8 issues detected</Button>
         </section>
       </Paper>
-      <Backdrop className={classes.simpleBackdrop} open={state.backdropOpen}>
+      <Backdrop style={{zIndex: 999}} open={state.backdropOpen}>
         <Paper className={classes.backdropPaper}>
           <Grid container direction="vertical" spacing={2}>
             <Grid container item direction="row" alignItems="center">

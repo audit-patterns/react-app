@@ -4,10 +4,6 @@ export default makeStyles((theme) => ({
   root: {
     flexGrow: 1,
   },
-  simpleBackdrop: {
-    zIndex: theme.zIndex.drawer + 1,
-    color: '#fff',
-  },
   backdropPaper: {
     width: '30em',
     padding: '0.8em',

@@ -5,14 +5,14 @@ export default makeStyles((theme) => ({
     flexGrow: 1,
   },
   h1: {
-    marginBottom: '2.5rem',
+    marginBottom: '1em',
   },
   paper: {
-    padding: '1rem 2rem 1rem 2rem',
+    padding: '1em 2em 1em 2em',
     width: '100%',
-    maxWidth: '30rem',
+    maxWidth: '25em',
   },
   textField: {
-    marginBottom: '1.5rem',
+    marginBottom: '1.5em',
   },
 }))

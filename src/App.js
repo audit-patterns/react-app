@@ -33,14 +33,14 @@ function App() {
         <Navbar />
         <Grid item xs={12} style={{ padding: '1rem' }}>
           <Switch>
-            <Route exact path="/" component={Welcome} />
+            <Route path="/sign-in" component={SignIn} />
+            <Route exact path="/" component={SignIn} />
             <Route path="/column-mapping" component={EntryColumnMapping} />
             <Route path="/contribution-eligibility" component={EntryContributionEligibility} />
             <Route path="/contribution-mapping" component={EntryContributionMapping} />
             <Route path="/file-upload" component={FileUpload} />
             <Route path="/fiscal-info" component={EntryFiscalInfo} />
             <Route path="/multi-entity" component={EntryMultiEntity} />
-            <Route path="/sign-in" component={SignIn} />
             <Route path="/summary" component={Summary} />
           </Switch>
         </Grid>
