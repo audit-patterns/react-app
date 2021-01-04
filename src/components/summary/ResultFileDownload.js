@@ -1,16 +1,33 @@
 import React from 'react'
-import Button from '@material-ui/core/Button'
+
+import {
+  useHistory,
+} from 'react-router-dom'
+
+import {
+  Button,
+  Grid,
+} from '@material-ui/core'
 
 const ResultFileDownload = () => {
+  const history = useHistory()
+  const handleClickBack = () => history.goBack()
+
   return (
     <div>
       <h1>Summary file</h1>
-      <Button variant="outlined" color="primary" style={{ marginRight: '1rem' }}>
-        Back
-      </Button>
-      <Button variant="contained" color="primary" disableElevation>
-        Download File
-      </Button>
+      <Grid container direction="row" spacing={2} style={{ marginTop: '2em' }}>
+        <Grid item>
+          <Button color="primary"
+            variant="outlined"
+            onClick={handleClickBack}>Back</Button>
+        </Grid>
+        <Grid item>
+          <Button variant="contained" color="primary" disableElevation>
+            Download File
+          </Button>
+        </Grid>
+      </Grid>
     </div>
   )
 }

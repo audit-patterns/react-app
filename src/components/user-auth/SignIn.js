@@ -28,13 +28,13 @@ const SignInComponent = () => {
         <TextField id="username"
           className={classes.textField}
           required
-          label="username"
+          label="Username"
           fullWidth={true}
           variant="outlined" />
         <TextField id="password"
           className={classes.textField}
           required
-          label="password"
+          label="Password"
           fullWidth={true}
           type="password"
           variant="outlined" />
