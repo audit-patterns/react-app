@@ -130,9 +130,9 @@ const MultiEntityComponent = () => {
           </FormControl>
           {state.namesSingleColumn === 'true' ? renderOneColumn() : renderTwoColumn()}
           <FormControl variant="outlined" size="small" className={classes.select}>
-            <InputLabel htmlFor="temp">Employee ID or Unique Identifier</InputLabel>
+            <InputLabel htmlFor="temp">Employee ID or Identifier</InputLabel>
             <Select native
-              label="Employee ID or Unique Identifier"
+              label="Employee ID or Identifier"
               inputProps={{
                 name: 'columnEmployeeId',
                 id: 'columnEmployeeIdSelect',

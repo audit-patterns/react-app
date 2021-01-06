@@ -44,7 +44,7 @@ const SignInComponent = () => {
           variant="contained"
           disableElevation
           fullWidth={true}
-          onClick={handleSignInSubmit}>Enter</Button>
+          onClick={handleSignInSubmit}>Login</Button>
       </Paper>
     </Grid>
   )
