@@ -7,12 +7,12 @@ export default (state = initState, action) => {
     case 'SIGNIN_ERROR':
       return {
         ...state,
-        authError: null,
+        authError: 'auth/sign-in-failed',
       }
     case 'SIGNIN_OK':
       return {
         ...state,
-        authError: 'auth/sign-in-failed',
+        authError: null,
       }
     case 'SIGNOUT_OK':
       return state
