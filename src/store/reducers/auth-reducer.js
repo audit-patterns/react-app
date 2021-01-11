@@ -2,7 +2,7 @@ const initState = {
   authError: null,
 }
 
-export default (state = initState, action) => {
+const authReducer = (state = initState, action) => {
   switch (action.type) {
     case 'SIGNIN_ERROR':
       return {
@@ -20,3 +20,5 @@ export default (state = initState, action) => {
       return state
   }
 }
+
+export default authReducer

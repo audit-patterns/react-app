@@ -2,29 +2,40 @@
 import React from 'react'
 
 import {
+  useSelector,
+  useDispatch,
+} from 'react-redux'
+
+import {
   useDropzone,
 } from 'react-dropzone'
 
 import {
-  useHistory,
-} from 'react-router-dom'
+  initSession,
+} from '../../store/actions/session-actions'
 
 import {
-  Button,
   Grid,
   Paper,
-  TextField,
  } from '@material-ui/core'
  import {
   CloudUploadOutlined,
  } from '@material-ui/icons'
 
 import useStyles from './FileUploadStyles'
-import FileUploadProgress from './FileUploadProgress'
+
+const fileExtensions = ['csv', 'xls', 'xlsx']
+const fileMimeTypes = {
+  'application/vnd.ms-excel': 2,
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 3,
+  'text/csv': 1,
+}
 
 const FileUploadSelector = (props) => {
   const classes = useStyles()
-  const history = useHistory()
+  const dispatch = useDispatch()
+  const session = useSelector(state => state.session)
+  console.info(session)
 
   const {
     acceptedFiles,
@@ -39,8 +50,11 @@ const FileUploadSelector = (props) => {
     ].join(', '),
     maxFiles: 1,
     onDropAccepted: files => files.map(file => {
-      console.info(file)
-      return history.push('/fiscal-info')
+      const explodedPath = file.path.split('.')
+      const xtsn = explodedPath.pop()
+      if (fileExtensions.includes(xtsn)) return dispatch(initSession(file, xtsn))
+      const mimeType = fileMimeTypes[file.type]
+      if (mimeType) return dispatch(initSession(file, fileExtensions[mimeType - 1]))
     }),
   })
 
@@ -70,7 +84,6 @@ const FileUploadSelector = (props) => {
           </aside>
         </section>
       </Paper>
-      <FileUploadProgress />
     </Grid>
   )
 }

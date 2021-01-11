@@ -44,7 +44,7 @@ import Welcome from './pages/Welcome'
 
 const rrfProps = {
   firebase,
-  config: { userProfile: 'users' },
+  config: {},
   dispatch: store.dispatch,
 }
 
