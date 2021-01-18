@@ -2,7 +2,6 @@
 import React from 'react'
 
 import {
-  useSelector,
   useDispatch,
 } from 'react-redux'
 
@@ -34,8 +33,6 @@ const fileMimeTypes = {
 const FileUploadSelector = (props) => {
   const classes = useStyles()
   const dispatch = useDispatch()
-  const session = useSelector(state => state.session)
-  console.info(session)
 
   const {
     acceptedFiles,
