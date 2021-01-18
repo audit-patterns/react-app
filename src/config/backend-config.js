@@ -6,6 +6,10 @@ const backendConfig = {
         path: '/',
         method: 'POST',
       },
+      sessionUpdate: {
+        path: '/',
+        method: 'PUT',
+      },
     },
   },
 }
