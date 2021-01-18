@@ -8,6 +8,13 @@ const sessionReducer = (state = {}, action) => {
         uploadInProgress: true,
         uploadProgress: 0,
       }
+    case 'SESSION_NEW':
+      return {}
+    case 'SESSION_SYNC_SUCCESS':
+      return {
+        ...state,
+        ...action.payload,
+      }
     case 'UPLOAD_PROGRESS':
       return {
         ...state,

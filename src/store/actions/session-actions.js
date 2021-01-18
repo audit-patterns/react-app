@@ -16,6 +16,10 @@ const retrieveAccessToken = (firebase) => new Promise((resolve, reject) => {
   })
 })
 
+const resetSession = () => async (dispatch, getState, getFirebase) => {
+  dispatch({ type: 'SESSION_NEW' })
+}
+
 const initSession = (file, xtsn) => async (dispatch, getState, getFirebase) => {
   const firebase = getFirebase()
   const token = await retrieveAccessToken(firebase)
@@ -46,12 +50,7 @@ const initSession = (file, xtsn) => async (dispatch, getState, getFirebase) => {
       }
     })
 
-    const formData = new FormData()
-    formData.append('file', file)
-    const uploadTrx = await axios.put(uploadURL, formData, {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
+    const uploadTrx = await axios.put(uploadURL, file, {
       onUploadProgress: (event) => {
         const {
           loaded,
@@ -75,6 +74,33 @@ const initSession = (file, xtsn) => async (dispatch, getState, getFirebase) => {
   }
 }
 
+const updateSession = (data) => async (dispatch, getState, getFirebase) => {
+  const firebase = getFirebase()
+  const token = await retrieveAccessToken(firebase)
+
+  const { sessionUpdate: { method, path } } = operations
+  const { id: sessionId } = data
+  try {
+    const sessionTrx = await axios({
+      baseURL,
+      method,
+      url: `${path}${sessionId}`,
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      data,
+    })
+    const { status } = sessionTrx
+    if (status !== 200) throw new Error()
+    dispatch({ type: 'SESSION_SYNC_SUCCESS', payload: data })
+  } catch (err) {
+    dispatch({ type: 'SESSION_SYNC_FAILED' })
+  }
+}
+
 export {
   initSession,
+  resetSession,
+  updateSession,
 }
