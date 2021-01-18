@@ -11,7 +11,8 @@ import {
   isEmpty,
 } from 'react-redux-firebase'
 
-import store from './store'
+import { PersistGate } from 'redux-persist/integration/react'
+import { store, persistor } from './store'
 import firebase from './config/firebase-config'
 
 import {
@@ -60,26 +61,28 @@ function PrivateRoute(props) {
 function App() {
   return (
     <Provider store={store}>
-      <ReactReduxFirebaseProvider {...rrfProps}>
-        <ThemeProvider theme={theme}>
-          <BrowserRouter>
-            <Navbar />
-            <Grid item xs={12} style={{ padding: '1rem' }}>
-              <Switch>
-                <Route path="/sign-in" component={SignIn} />
-                <Route exact path="/" component={SignIn} />
-                <PrivateRoute path="/column-mapping" component={EntryColumnMapping} />
-                <PrivateRoute path="/contribution-eligibility" component={EntryContributionEligibility} />
-                <PrivateRoute path="/contribution-mapping" component={EntryContributionMapping} />
-                <PrivateRoute path="/file-upload" component={FileUpload} />
-                <PrivateRoute path="/fiscal-info" component={EntryFiscalInfo} />
-                <PrivateRoute path="/multi-entity" component={EntryMultiEntity} />
-                <PrivateRoute path="/summary" component={Summary} />
-              </Switch>
-            </Grid>
-          </BrowserRouter>
-        </ThemeProvider>
-      </ReactReduxFirebaseProvider>
+      <PersistGate loading={null} persistor={persistor}>
+        <ReactReduxFirebaseProvider {...rrfProps}>
+          <ThemeProvider theme={theme}>
+            <BrowserRouter>
+              <Navbar />
+              <Grid item xs={12} style={{ padding: '1rem' }}>
+                <Switch>
+                  <Route path="/sign-in" component={SignIn} />
+                  <Route exact path="/" component={SignIn} />
+                  <PrivateRoute path="/column-mapping" component={EntryColumnMapping} />
+                  <PrivateRoute path="/contribution-eligibility" component={EntryContributionEligibility} />
+                  <PrivateRoute path="/contribution-mapping" component={EntryContributionMapping} />
+                  <PrivateRoute path="/file-upload" component={FileUpload} />
+                  <PrivateRoute path="/fiscal-info" component={EntryFiscalInfo} />
+                  <PrivateRoute path="/multi-entity" component={EntryMultiEntity} />
+                  <PrivateRoute path="/summary" component={Summary} />
+                </Switch>
+              </Grid>
+            </BrowserRouter>
+          </ThemeProvider>
+        </ReactReduxFirebaseProvider>
+      </PersistGate>
     </Provider>
   );
 }

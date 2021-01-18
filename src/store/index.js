@@ -7,13 +7,27 @@ import {
 } from 'redux'
 
 import {
+  persistStore,
+  persistReducer,
+} from 'redux-persist'
+import storage from 'redux-persist/lib/storage'
+
+import {
   getFirebase,
 } from 'react-redux-firebase'
 
 import rootReducer from './reducers/root-reducer'
 
+const persistConfig = {
+  key: 'root',
+  storage,
+}
+
+const persistedReducer = persistReducer(persistConfig, rootReducer)
+
 const middlewares = [thunk.withExtraArgument(getFirebase)]
 
-const store = createStore(rootReducer, {}, compose(applyMiddleware(...middlewares)))
+let store = createStore(persistedReducer, {}, compose(applyMiddleware(...middlewares)))
+let persistor = persistStore(store)
 
-export default store
+export { store, persistor }
