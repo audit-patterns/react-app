@@ -51,8 +51,7 @@ const SignInComponent = () => {
     <Grid container item direction="row" justify="center">
       <Paper className={classes.paper}>
         <h1 className={classes.h1}>Login</h1>
-        <form onSubmit={handleSubmit}
-          pre>
+        <form onSubmit={handleSubmit}>
           <TextField id="email"
             className={classes.textField}
             size="small"
