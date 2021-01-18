@@ -9,10 +9,7 @@ import FileUploadProgress from '../components/file-upload/FileUploadProgress'
 const FileUpload = () => {
   const history = useHistory()
   const session = useSelector(state => state.session)
-  const {
-    uploadInProgress,
-    uploadSucess,
-  } = session
+  const { uploadInProgress, uploadSucess } = session
   uploadSucess && history.push('/fiscal-info')
   return (uploadInProgress
     ? <FileUploadProgress />
