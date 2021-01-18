@@ -1,9 +1,8 @@
 import React from 'react'
 
+import { useSelector } from 'react-redux'
 
-import {
-  useHistory,
-} from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 
 import {
   Button,
@@ -37,6 +36,10 @@ const MultiEntityComponent = () => {
     multiEntity: 'No',
     entitiesColumn: columnNames[0],
   })
+
+  const [session, setSession] = React.useState(useSelector(state => state.session))
+  const { id: sessionId, parametersIRS } = session
+  if (!parametersIRS || parametersIRS.auditYear) history.push('/fiscal-info')
 
   const handleChange = e => setState({
     ...state,
