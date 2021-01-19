@@ -27,7 +27,7 @@ const SignedInLinks = () => {
   return (
     <Grid item container xs={10} spacing={1} direction="row" justify="flex-end" alignItems="center">
       <Grid item>
-        <Link onClick={handleReset}>Start over</Link>
+        <Link to="#" onClick={handleReset}>Start over</Link>
       </Grid>
       <Grid item>
         <Link to="#" onClick={() => dispatch(signOut())}>Sign out</Link>
