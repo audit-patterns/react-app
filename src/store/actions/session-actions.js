@@ -17,7 +17,7 @@ const retrieveAccessToken = (firebase) => new Promise((resolve, reject) => {
 })
 
 const resetSession = () => async (dispatch, getState, getFirebase) => {
-  dispatch({ type: 'SESSION_NEW' })
+  dispatch({ type: 'SESSION_RESET' })
 }
 
 const initSession = (file, xtsn) => async (dispatch, getState, getFirebase) => {

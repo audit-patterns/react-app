@@ -17,9 +17,10 @@ const signOut = () =>  (dispatch, getState, getFirebase) => {
   firebase
     .auth()
     .signOut()
-    .then(() => dispatch({
-      type: 'SIGNOUT_OK',
-    }))
+    .then(() => {
+      dispatch({ type: 'SIGNOUT_OK' })
+      dispatch({ type: 'SESSION_RESET' })
+    })
 }
 
 export {
