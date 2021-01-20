@@ -10,11 +10,16 @@ const sessionReducer = (state = {}, action) => {
       }
     case 'SESSION_RESET':
       return {}
-    case 'SESSION_SYNC_SUCCESS':
+    case 'SESSION/SYNC_SUCCESS':
       return {
         ...state,
         ...action.payload,
       }
+    case 'SESSION_SYNC_SUCCESS':
+    return {
+      ...state,
+      ...action.payload,
+    }
     case 'UPLOAD_PROGRESS':
       return {
         ...state,
