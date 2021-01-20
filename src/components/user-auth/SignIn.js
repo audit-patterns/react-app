@@ -57,7 +57,7 @@ const SignInComponent = () => {
             size="small"
             required
             label="Email"
-            fullWidth={true}
+            fullWidth
             onChange={handleChange}
             variant="outlined" />
           <TextField id="password"
@@ -65,7 +65,7 @@ const SignInComponent = () => {
             size="small"
             required
             label="Password"
-            fullWidth={true}
+            fullWidth
             type="password"
             onChange={handleChange}
             on
