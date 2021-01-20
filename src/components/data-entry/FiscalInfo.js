@@ -13,13 +13,10 @@ import {
 
 import useStyles from './DataEntryStyles'
 
-import { updateSession } from '../../store/actions/session-actions'
+import actions from '../../store/actions'
 
 const FiscalInfoComponent = () => {
-  const classes = useStyles()
-  const history = useHistory()
-  const dispatch = useDispatch()
-  const [session, setSession] = useState(useSelector(state => state.session))
+  const session = useSelector(state => state.session)
   const {
     id: sessionId,
     parametersIRS: {
@@ -29,23 +26,34 @@ const FiscalInfoComponent = () => {
       highlyCompensatedLimit = '',
     },
   } = session
+  const history = useHistory()
   if (!sessionId) history.push('/file-upload')
 
-  const handleChange = (e) => setSession({
-    ...session,
+  const [state, setState] = useState({
     parametersIRS: {
-      ...session.parametersIRS,
-      [e.target.id]: e.target.type === 'number'
-        ? Number(e.target.value)
-        : e.target.value,
+      auditYear,
+      contributionLimitsCatchup,
+      contributionLimitsElective,
+      highlyCompensatedLimit,
     }
   })
-  const handleSubmit = async (e) => {
+
+  const handleChange = (e) => setState({
+    ...state,
+    parametersIRS: {
+      ...state.parametersIRS,
+      [e.target.id]: e.target.type === 'number' ? Number(e.target.value) : e.target.value,
+    }
+  })
+
+  const dispatch = useDispatch()
+  const handleSubmit = (e) => {
     e.preventDefault()
-    dispatch(await updateSession(session))
+    dispatch(actions['SESSION/UPDATE'](sessionId, state))
     history.push('/multi-entity')
   }
 
+  const classes = useStyles()
   return (
     <Grid container item direction="row" justify="center">
       <Paper className={classes.paper}>
