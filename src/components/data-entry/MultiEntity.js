@@ -92,7 +92,7 @@ const MultiEntityComponent = () => {
           value={state.mappedCols.entities}
           required
           onChange={handleColMappingChange} >
-            {['', ...columnNames].map((column, idx) => (
+            {columnNames.map((column, idx) => (
               <option key={idx} value={column}>{column}</option>
             ))}
           </Select>
