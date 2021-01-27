@@ -1,19 +1,16 @@
 import React from 'react'
 
-import {
-  useHistory,
-} from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+
+import { useHistory } from 'react-router-dom'
 
 import {
   Button,
   Divider,
   FormControl,
-  FormControlLabel,
   Grid,
   InputLabel,
   Paper,
-  Radio,
-  RadioGroup,
   Select,
 } from '@material-ui/core'
 
@@ -22,76 +19,126 @@ import {
   Delete,
 } from '@material-ui/icons'
 
+import isArray from 'lodash/isArray'
+import isEmpty from 'lodash/isEmpty'
+
 import useStyles from './DataEntryStyles'
 
-const MultiEntityComponent = () => {
-  const classes = useStyles()
-  const history = useHistory()
+import actions from '../../store/actions'
 
-  const columnNames = [
-    '',
-    'Column1',
-    'Column2',
-    'Column3',
-    'Column4',
-    'Column5',
-    'Column6',
-    'Column7',
-  ]
+const ContributionMappingComponent = () => {
+  const session = useSelector(state => state.session)
+  const {
+    id: sessionId,
+    originalCols: columnNames = [],
+    mappedCols,
+  } = session
 
   const [state, setState] = React.useState({
-    cols401k: [''],
-    colsRoth: [''],
-    colEmployerMatch: '',
-    colEmployerNonElective: '',
+    mappedCols: {
+      ...mappedCols,
+      contributions401k: mappedCols.contributions401k || [''],
+      contributionsRoth: mappedCols.contributionsRoth || [''],
+      employerMatch: mappedCols.employerMatch || '',
+      employerNonElective: mappedCols.employerNonElective || '',
+    }
   })
+  const [invalidForm, setInvalidForm] = React.useState(false)
+
+  const dispatch = useDispatch()
+  if (!columnNames.length) dispatch(actions['SESSION/FETCH'](sessionId))
 
   const handleChange = e => setState({
-    ...state,
-    [e.target.name]: e.target.value,
+    mappedCols: {
+      ...state.mappedCols,
+      [e.target.name]: e.target.value,
+    },
   })
   const handleComplexChange = e => {
     const [target, idx] = e.target.name.split('-')
-    const arr = [...state[target]]
+    const arr = [...state.mappedCols[target]]
     arr[idx] = e.target.value
     setState({
-      ...state,
-      [target]: arr,
+      mappedCols: {
+        ...state.mappedCols,
+        [target]: arr,
+      },
     })
   }
   const handleAddColumn = id => setState({
-    ...state,
-    [id]: [...state[id], ''],
+    mappedCols: {
+      ...state.mappedCols,
+      [id]: [...state.mappedCols[id], ''],
+    },
   })
   const handleRemoveColumn = (id, idx) => {
-    const arr = [...state[id]]
+    const arr = [...state.mappedCols[id]]
     arr.splice(idx, 1)
     setState({
-      ...state,
-      [id]: arr,
+      mappedCols: {
+        ...state.mappedCols,
+        [id]: arr,
+      },
     })
   }
+
+  const history = useHistory()
+
   const handleClickBack = () => history.goBack()
-  const handleClickNext = () => history.push('/contribution-eligibility')
+
+  const pageMappings = ['contributions401k', 'contributionsRoth', 'employerMatch', 'employerNonElective']
+  const handleClickNext = e => {
+    e.preventDefault()
+    const persistState = pageMappings
+      .reduce((acc, cur) => {
+        let value = state.mappedCols[cur]
+        if (isArray(value)) {
+          value = value.filter(subItem => !isEmpty(subItem))
+          value = value.length ? value : null
+        } else {
+          value = isEmpty(value) ? null : value
+        }
+        console.info(value)
+        return {
+          mappedCols: {
+            ...acc.mappedCols,
+            [cur]: value,
+          }
+        }
+      }, state)
+    console.info(persistState)
+    const arraysTotalLength = Object.values(persistState.mappedCols)
+      .reduce((acc, cur) => isArray(cur) ? acc + cur.length : acc, 0)
+    const evalInvalidForm = arraysTotalLength === 0
+    setInvalidForm(evalInvalidForm)
+    if (evalInvalidForm) return
+    dispatch(actions['SESSION/UPDATE'](sessionId, persistState))
+    history.push('/contribution-eligibility')
+  }
+
+  const classes = useStyles()
+
+  const invalidFormAlert = () => (
+    <div style={{ color: 'red', marginTop: '2em' }}>At least one column for Employees 401k or Roth Contributions is required</div>
+  )
 
   return (
     <Grid container item direction="row" justify="center">
       <Paper className={classes.paper}>
+        <form onSubmit={handleClickNext}>
         <Grid container direction="column">
+          {(!invalidForm) ? '' : invalidFormAlert()}
           <h1>Map columns for each contribution type in this plan</h1>
           <h1 style={{fontSize: '100%'}}>Employee 401k (non-Roth)</h1>
           <span>Which columns have 401k employee contribution data?</span>
-          {state.cols401k.map((colName, idx) => (
+          {state.mappedCols.contributions401k.map((colName, idx) => (
             <Grid container direction="row" spacing={2} alignItems="center" style={{marginTop: '0.5em'}}>
               <Grid item>
                 <FormControl variant="outlined" size="small">
-                  <InputLabel htmlFor={`cols401k-${idx}`}>Select a column</InputLabel>
+                  <InputLabel htmlFor={`contributions401k'-${idx}`}>Select a column</InputLabel>
                   <Select native
                     label="Select a column"
-                    inputProps={{
-                      name: `cols401k-${idx}`,
-                      id: `cols401k-${idx}`,
-                    }}
+                    inputProps={{ name: `contributions401k-${idx}`, id: `contributions401k-${idx}` }}
                     style={{ width: '16em' }}
                     value={colName}
                     onChange={handleComplexChange} >
@@ -105,7 +152,7 @@ const MultiEntityComponent = () => {
               <Grid item>
                 {idx === 0
                   ? <span>&nbsp;</span>
-                  : <Delete style={{cursor: 'pointer'}} onClick={() => handleRemoveColumn('cols401k', idx)} />
+                  : <Delete style={{cursor: 'pointer'}} onClick={() => handleRemoveColumn('contributions401k', idx)} />
                 }
               </Grid>
             </Grid>
@@ -113,20 +160,20 @@ const MultiEntityComponent = () => {
           <Button startIcon={<Add />}
             color="primary"
             style={{ maxWidth: '16em', marginTop: '0.5em' }}
-            onClick={() => handleAddColumn('cols401k')}>Map Another Column</Button>
+            onClick={() => handleAddColumn('contributions401k')}>Map Another Column</Button>
 
           <h1 style={{fontSize: '100%'}}>Employee Roth contributions</h1>
           <span>Which columns have Roth employee contribution data?</span>
-          {state.colsRoth.map((colName, idx) => (
+          {state.mappedCols.contributionsRoth.map((colName, idx) => (
             <Grid container direction="row" spacing={2} alignItems="center" style={{marginTop: '0.5em'}}>
               <Grid item>
                 <FormControl variant="outlined" size="small">
-                  <InputLabel htmlFor={`colsRoth-${idx}`}>Select a column</InputLabel>
+                  <InputLabel htmlFor={`contributionsRoth-${idx}`}>Select a column</InputLabel>
                   <Select native
                     label="Select a column"
                     inputProps={{
-                      name: `colsRoth-${idx}`,
-                      id: `colsRoth-${idx}`,
+                      name: `contributionsRoth-${idx}`,
+                      id: `contributionsRoth-${idx}`,
                     }}
                     style={{ width: '16em' }}
                     value={colName}
@@ -141,7 +188,7 @@ const MultiEntityComponent = () => {
               <Grid item>
                 {idx === 0
                   ? <span>&nbsp;</span>
-                  : <Delete style={{cursor: 'pointer'}} onClick={() => handleRemoveColumn('colsRoth', idx)} />
+                  : <Delete style={{cursor: 'pointer'}} onClick={() => handleRemoveColumn('contributionsRoth', idx)} />
                 }
               </Grid>
             </Grid>
@@ -149,7 +196,7 @@ const MultiEntityComponent = () => {
           <Button startIcon={<Add />}
             color="primary"
             style={{ maxWidth: '16em', marginTop: '0.5em' }}
-            onClick={() => handleAddColumn('colsRoth')}>Map Another Column</Button>
+            onClick={() => handleAddColumn('contributionsRoth')}>Map Another Column</Button>
           <Divider style={{marginTop: '1em'}} />
           <h1 style={{fontSize: '100%'}}>Employer Match contributions</h1>
           <span>Which column has the Employer Match contribution data?</span>
@@ -157,13 +204,10 @@ const MultiEntityComponent = () => {
             <InputLabel htmlFor="temp">Select a column</InputLabel>
             <Select native
               label="Select a column"
-              inputProps={{
-                name: 'colEmployerMatch',
-                id: 'colEmployerMatch',
-              }}
+              inputProps={{ name: 'employerMatch', id: 'employerMatch' }}
               style={{ width: '16em' }}
-              value={state.colEmployerMatch}
-              onChange={handleChange} >
+              value={state.mappedCols.employerMatch}
+              onChange={handleChange}>
                 {columnNames.map(column => (
                   <option value={column}>{column}</option>
                 ))}
@@ -176,13 +220,10 @@ const MultiEntityComponent = () => {
             <InputLabel htmlFor="temp">Select a column</InputLabel>
             <Select native
               label="Select a column"
-              inputProps={{
-                name: 'colEmployerNonElective',
-                id: 'colEmployerNonElective',
-              }}
+              inputProps={{ name: 'employerNonElective', id: 'employerNonElective' }}
               style={{ width: '16em' }}
-              value={state.colEmployerNonElective}
-              onChange={handleChange} >
+              value={state.mappedCols.employerNonElective}
+              onChange={handleChange}>
                 {columnNames.map(column => (
                   <option value={column}>{column}</option>
                 ))}
@@ -203,9 +244,10 @@ const MultiEntityComponent = () => {
             </Grid>
           </Grid>
         </Grid>
+        </form>
       </Paper>
     </Grid>
   )
 }
 
-export default MultiEntityComponent
+export default ContributionMappingComponent
